@@ -46,9 +46,14 @@ minecraft_fp {
 
 repositories {
     cursemavenEX()
+    maven {
+        name = "Jitpack"
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
     //LookingGlass 0.2.0.01
     compileOnly(deobfCurse("lookingglass-230541:2321557"))
+    compileOnly("com.github.GTNewHorizons:Angelica:2.2.11:dev")
 }

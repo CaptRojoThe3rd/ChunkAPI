@@ -79,6 +79,13 @@ public enum Mixin implements IMixins {
                        avoid(Angelica),
                        client("vanilla.RenderGlobalMixin")),
 
+    Compat_Angelica(Phase.LATE,
+                    require(Angelica),
+                    client("angelica.AngelicaRenderSectionManagerMixin",
+                           "angelica.CeleritasWorldRendererMixin",
+                           "angelica.ClonedChunkSectionMixin",
+                           "angelica.WorldSliceMixin")),
+
     Compat_LookingGlass(Phase.LATE,
                         require(LookingGlass),
                         common("lookingglass.PacketChunkInfoMixin")),
