@@ -22,6 +22,7 @@
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.base;
 
+import com.falsepattern.chunk.internal.ChunkAPI;
 import com.falsepattern.chunk.internal.DataRegistryImpl;
 import com.falsepattern.chunk.internal.mixin.helpers.LockHelper;
 import lombok.val;
@@ -116,6 +117,7 @@ public abstract class S21PacketChunkDataMixin {
         } finally {
             LockHelper.bufferLockS21PacketChunkData.unlock();
         }
+
         return extracted;
     }
 
@@ -138,7 +140,7 @@ public abstract class S21PacketChunkDataMixin {
         data.writeInt(xPosition);
         data.writeInt(zPosition);
         data.writeBoolean(forceUpdate);
-        data.writeShort((short) (subChunkMask & 0xFFFF));
+        data.writeInt(subChunkMask);
         data.writeInt(this.data.length);
         data.writeInt(deflatedSize);
         data.writeBytes(deflatedData, 0, deflatedSize);
@@ -153,7 +155,7 @@ public abstract class S21PacketChunkDataMixin {
         xPosition = data.readInt();
         zPosition = data.readInt();
         forceUpdate = data.readBoolean();
-        subChunkMask = data.readShort() & 0xFFFF;
+        subChunkMask = data.readInt();
         this.data = new byte[data.readInt()];
         deflatedSize = data.readInt();
         if (buffer.length < deflatedSize) {

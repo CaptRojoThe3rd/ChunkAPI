@@ -28,6 +28,8 @@ import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S21PacketChunkData;
@@ -70,6 +72,13 @@ public abstract class S26PacketMapChunkBulkMixin {
 
     @Shadow(remap = false)
     protected abstract void compress();
+
+    @ModifyConstant(method = "<init>(Ljava/util/List;)V",
+                    constant = @Constant(intValue = 0xffff),
+                    require = 1)
+    private static int changeSubchunkMask(int constant) {
+        return 0xffffffff;
+    }
 
     /**
      * @author FalsePattern
@@ -149,7 +158,7 @@ public abstract class S26PacketMapChunkBulkMixin {
         for (int i = 0; i < xPositions.length; ++i) {
             data.writeInt(xPositions[i]);
             data.writeInt(zPositions[i]);
-            data.writeShort((short) (subChunkMasks[i] & 65535));
+            data.writeShort((short) (subChunkMasks[i] & 0xffffffff));
         }
     }
 }

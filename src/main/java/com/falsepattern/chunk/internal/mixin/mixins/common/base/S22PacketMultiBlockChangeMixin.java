@@ -60,14 +60,14 @@ public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMult
     }
 
     @Override
-    public void chunkapi$init(int count, short[] crammedPositions, Chunk chunk) {
+    public void chunkapi$init(int count, int[] crammedPositions, Chunk chunk) {
         coord = new ChunkCoordIntPair(chunk.xPosition, chunk.zPosition);
         subPackets = new S23PacketBlockChange[count];
         for (int i = 0; i < count; ++i) {
             val subPacket = new S23PacketBlockChange();
-            int x = crammedPositions[i] >> 12 & 0xf;
-            int z = crammedPositions[i] >> 8 & 0xf;
-            int y = crammedPositions[i] & 0xff;
+            int x = crammedPositions[i] >> 20 & 0xf;
+            int z = crammedPositions[i] >> 16 & 0xf;
+            int y = crammedPositions[i] & 0xffff;
             ((CustomPacketBlockChange) subPacket).chunkapi$init(x, y, z, chunk);
             subPackets[i] = subPacket;
         }
@@ -90,9 +90,9 @@ public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMult
             subPackets[i] = subPacket;
             val cSub = (CustomPacketBlockChange) subPacket;
             val pos = data.readUnsignedShort();
-            val x = pos >> 12 & 0xf;
-            val z = pos >> 8 & 0xf;
-            val y = pos & 0xff;
+            val x = pos >> 20 & 0xf;
+            val z = pos >> 16 & 0xf;
+            val y = pos & 0xffff;
             cSub.chunkapi$x(x);
             cSub.chunkapi$y(y);
             cSub.chunkapi$z(z);
@@ -115,7 +115,7 @@ public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMult
             data.writeVarIntToBuffer(subPackets.length);
             for (val subPacket : subPackets) {
                 val cSub = (CustomPacketBlockChange) subPacket;
-                int pos = ((cSub.chunkapi$x() & 0xf) << 12) | ((cSub.chunkapi$z() & 0xf) << 8) | (cSub.chunkapi$y() & 0xff);
+                int pos = ((cSub.chunkapi$x() & 0xf) << 20) | ((cSub.chunkapi$z() & 0xf) << 16) | (cSub.chunkapi$y() & 0xffff);
                 data.writeShort(pos);
                 DataRegistryImpl.writeBlockPacketToBuffer(subPacket, data);
             }

@@ -11,6 +11,11 @@ loading hooks, and more.
 
 ### Mod logo by Houstonruss
 
+Fork Info
+-----
+
+This fork of ChunkAPI extends the build height limit to 512 blocks. See [fork.md](fork.md).
+
 NotEnoughIDs Compatibility Notice
 -----
 

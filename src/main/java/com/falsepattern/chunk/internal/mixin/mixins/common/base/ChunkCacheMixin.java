@@ -20,20 +20,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.chunk.internal;
+package com.falsepattern.chunk.internal.mixin.mixins.common.base;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.falsepattern.chunk.internal.Common;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-/**
- * Non-minecraft stuff to avoid accidental classloading in spaghetti code
- */
-public class Common {
-    public static final Logger LOG = LogManager.getLogger(Tags.MOD_ID);
+import net.minecraft.world.ChunkCache;
 
-    public static final int CHUNK_HEIGHT = 512;
-    public static final int CHUNK_HEIGHT_MASK = 511;
-    public static final int SUBCHUNK_COUNT = 32;
+@Mixin(ChunkCache.class)
+public abstract class ChunkCacheMixin {
+    @ModifyConstant(method = "getBlock",
+                    constant = @Constant(intValue = 256),
+                    require = 1)
+    private static int modifyChunkHeight_getBlock(int constant) {
+        return Common.CHUNK_HEIGHT;
+    }
 
-    public static final int BLOCKS_PER_SUBCHUNK = 16 * 16 * 16;
+    @ModifyConstant(method = "getBlockMetadata",
+                    constant = @Constant(intValue = 256),
+                    require = 1)
+    private static int modifyChunkHeight_getBlockMetadata(int constant) {
+        return Common.CHUNK_HEIGHT;
+    }
 }

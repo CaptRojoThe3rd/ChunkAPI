@@ -29,15 +29,22 @@ import com.falsepattern.chunk.internal.vanilla.BlocklightManager;
 import com.falsepattern.chunk.internal.vanilla.LightingManager;
 import com.falsepattern.chunk.internal.vanilla.MetadataManager;
 import com.falsepattern.chunk.internal.vanilla.SkylightManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = Tags.MOD_ID,
      version = Tags.MOD_VERSION,
      name = Tags.MOD_NAME,
      acceptedMinecraftVersions = "[1.7.10]")
 public class ChunkAPI {
+
+    public static final Logger LOG = LogManager.getLogger(Tags.MOD_ID);
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {

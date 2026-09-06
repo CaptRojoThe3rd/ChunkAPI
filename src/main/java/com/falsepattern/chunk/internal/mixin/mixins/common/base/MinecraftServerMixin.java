@@ -20,20 +20,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.chunk.internal;
+package com.falsepattern.chunk.internal.mixin.mixins.common.base;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.falsepattern.chunk.internal.Common;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Non-minecraft stuff to avoid accidental classloading in spaghetti code
- */
-public class Common {
-    public static final Logger LOG = LogManager.getLogger(Tags.MOD_ID);
+import net.minecraft.server.MinecraftServer;
 
-    public static final int CHUNK_HEIGHT = 512;
-    public static final int CHUNK_HEIGHT_MASK = 511;
-    public static final int SUBCHUNK_COUNT = 32;
+@Mixin(MinecraftServer.class)
+public abstract class MinecraftServerMixin {
+    @Shadow
+    private int buildLimit;
 
-    public static final int BLOCKS_PER_SUBCHUNK = 16 * 16 * 16;
+    @Inject(method = "setBuildLimit",
+            at = @At(value = "TAIL"))
+    private void modifyBuildLimit(CallbackInfo ci) {
+        this.buildLimit = Common.CHUNK_HEIGHT;
+    }
 }

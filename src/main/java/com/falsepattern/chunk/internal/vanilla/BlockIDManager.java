@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static com.falsepattern.chunk.internal.Common.BLOCKS_PER_SUBCHUNK;
-import static com.falsepattern.chunk.internal.Common.SUBCHUNKS_PER_CHUNK;
+import static com.falsepattern.chunk.internal.Common.SUBCHUNK_COUNT;
 
 public class BlockIDManager extends VanillaManager implements DataManager.PacketDataManager, DataManager.CubicPacketDataManager, DataManager.BlockPacketDataManager, DataManager.SubChunkDataManager {
     private static final int LSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK;
@@ -52,7 +52,7 @@ public class BlockIDManager extends VanillaManager implements DataManager.Packet
 
     @Override
     public int maxPacketSize() {
-        return HEADER_SIZE + SUBCHUNKS_PER_CHUNK * (LSB_BYTES_PER_SUBCHUNK + MSB_BYTES_PER_SUBCHUNK);
+        return HEADER_SIZE + SUBCHUNK_COUNT * (LSB_BYTES_PER_SUBCHUNK + MSB_BYTES_PER_SUBCHUNK);
     }
 
     @Override

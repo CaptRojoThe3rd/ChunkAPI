@@ -22,6 +22,7 @@
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.base;
 
+import com.falsepattern.chunk.internal.Common;
 import com.falsepattern.chunk.internal.DataRegistryImpl;
 import lombok.val;
 import org.apache.logging.log4j.Level;
@@ -103,7 +104,7 @@ public abstract class AnvilChunkLoaderMixin {
 
     private void readSubChunks(Chunk chunk, NBTTagCompound nbt) {
         NBTTagList subChunksNBT = nbt.getTagList("Sections", 10);
-        byte segments = 16;
+        byte segments = (byte) Common.SUBCHUNK_COUNT;
         ExtendedBlockStorage[] subChunkList = new ExtendedBlockStorage[segments];
 
         for (int k = 0; k < subChunksNBT.tagCount(); ++k) {

@@ -39,7 +39,7 @@ public abstract class NibbleManager extends VanillaManager implements DataManage
 
     @Override
     public int maxPacketSize() {
-        return Common.SUBCHUNKS_PER_CHUNK * BYTES_PER_SUBCHUNK;
+        return Common.SUBCHUNK_COUNT * BYTES_PER_SUBCHUNK;
     }
 
     @Override
