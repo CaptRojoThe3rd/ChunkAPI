@@ -20,4 +20,5 @@ it a part of the API, meaning mods like EndlessIDs rely on it being an integer.
 ### Compatibility
 
 Currently known incompatibilies:
+* Angelica (I added a fix to make the game not crash instantly when Angelica is loaded, but blocks above y=255 will not render)
 * ArchaicFix's Phosphor backport (mixin conflicts)

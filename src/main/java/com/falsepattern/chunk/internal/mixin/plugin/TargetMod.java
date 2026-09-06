@@ -34,6 +34,7 @@ import java.util.function.Consumer;
 public enum TargetMod implements ITargetMod {
     LookingGlass("com.xcompwiz.lookingglass.LookingGlass"),
     Spool("com.gamma.spool.core.Spool"),
+    Angelica("com.gtnewhorizons.angelica.AngelicaMod"),
     ;
     @Getter
     private final TargetModBuilder builder;

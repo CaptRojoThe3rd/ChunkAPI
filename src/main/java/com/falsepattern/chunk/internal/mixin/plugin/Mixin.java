@@ -34,6 +34,7 @@ import org.intellij.lang.annotations.Language;
 
 import java.util.function.BooleanSupplier;
 
+import static com.falsepattern.chunk.internal.mixin.plugin.TargetMod.Angelica;
 import static com.falsepattern.chunk.internal.mixin.plugin.TargetMod.LookingGlass;
 import static com.falsepattern.chunk.internal.mixin.plugin.TargetMod.Spool;
 import static com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper.avoid;
@@ -71,9 +72,12 @@ public enum Mixin implements IMixins {
                         "base.WorldProviderMixin"),
                  client("vanilla.ChunkMixin",
                         "vanilla.ChunkCacheMixin",
-                        "vanilla.RenderGlobalMixin",
                         "vanilla.WorldMixin",
                         "vanilla.WorldClientMixin")),
+
+    Vanilla_NoAngelica(Phase.EARLY,
+                       avoid(Angelica),
+                       client("vanilla.RenderGlobalMixin")),
 
     Compat_LookingGlass(Phase.LATE,
                         require(LookingGlass),
