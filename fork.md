@@ -20,5 +20,5 @@ it a part of the API, meaning mods like EndlessIDs rely on it being an integer.
 ### Compatibility
 
 Currently known incompatibilies:
-* Angelica (technically works, but there are some block corruption issues that are solved by just triggering a block update)
+* Angelica
 * ArchaicFix's Phosphor backport (mixin conflicts)
