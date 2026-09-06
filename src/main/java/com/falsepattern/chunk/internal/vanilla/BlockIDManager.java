@@ -43,7 +43,7 @@ import static com.falsepattern.chunk.internal.Common.SUBCHUNK_COUNT;
 public class BlockIDManager extends VanillaManager implements DataManager.PacketDataManager, DataManager.CubicPacketDataManager, DataManager.BlockPacketDataManager, DataManager.SubChunkDataManager {
     private static final int LSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK;
     private static final int MSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK / 2;
-    private static final int HEADER_SIZE = 2;
+    private static final int HEADER_SIZE = 4;
 
     @Override
     public String id() {
@@ -59,7 +59,7 @@ public class BlockIDManager extends VanillaManager implements DataManager.Packet
     public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
         val subChunks = chunk.getBlockStorageArray();
         int currentPos = buffer.position();
-        buffer.putShort((short) 0);
+        buffer.putInt(0);
         int msbMask = 0;
         for (int i = 0; i < subChunks.length; i++) {
             if ((subChunkMask & (1 << i)) != 0) {
@@ -75,14 +75,14 @@ public class BlockIDManager extends VanillaManager implements DataManager.Packet
         }
         int endPos = buffer.position();
         buffer.position(currentPos);
-        buffer.putShort((short) msbMask);
+        buffer.putInt(msbMask);
         buffer.position(endPos);
     }
 
     @Override
     public void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
         val subChunks = chunk.getBlockStorageArray();
-        val msbMask = buffer.getShort() & 0xFFFF;
+        val msbMask = buffer.getInt();
         for (int i = 0; i < subChunks.length; i++) {
             val subChunk = subChunks[i];
             if ((subChunkMask & (1 << i)) != 0 && subChunk != null) {
