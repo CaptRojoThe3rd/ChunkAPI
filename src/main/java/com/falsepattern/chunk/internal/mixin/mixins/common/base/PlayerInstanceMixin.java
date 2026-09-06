@@ -39,8 +39,22 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
 
+/**
+ * The `@Overwrite`s in this mixin are used to replace `short[] locationOfBlockChange` with
+ * `int[] chunkapi$locationOfBlockChange`.
+ * <br><br>
+ * In vanilla, `locationOfBlockChange` is an array of shorts that contains positions of blocks
+ * to be updated. Each position is formatted as `XXXXZZZZ YYYYYYYY`. This restricts the build height
+ * limit to 256 blocks.
+ * <br><br>
+ * The overwritten methods instead refer to `chunkapi$locationOfBlockChange`, which is an array of
+ * ints. Each position is formatted as `00000000 XXXXZZZZ YYYYYYYY YYYYYYYY`. Giving Y 16 bits is
+ * pretty overkill, but I think it looks cleaner.
+ */
+
 @Mixin(PlayerManager.PlayerInstance.class)
 public abstract class PlayerInstanceMixin {
+    /** PlayerManager.this */
     @Shadow
     @Final
     PlayerManager this$0;
@@ -54,7 +68,7 @@ public abstract class PlayerInstanceMixin {
     private ChunkCoordIntPair chunkLocation;
 
     @Unique
-    private int[] chunkapi$locationOfBlockChangeInt = new int[64];
+    private int[] chunkapi$locationOfBlockChange = new int[64];
 
 
     @Shadow
@@ -80,15 +94,15 @@ public abstract class PlayerInstanceMixin {
             int i1 = (x << 20 | z << 16 | y);
 
             for (int l = 0; l < this.numberOfTilesToUpdate; ++l) {
-                if (this.chunkapi$locationOfBlockChangeInt[l] == i1) {
+                if (this.chunkapi$locationOfBlockChange[l] == i1) {
                     return;
                 }
             }
 
-            if (numberOfTilesToUpdate == chunkapi$locationOfBlockChangeInt.length) {
-                chunkapi$locationOfBlockChangeInt = java.util.Arrays.copyOf(chunkapi$locationOfBlockChangeInt, chunkapi$locationOfBlockChangeInt.length << 1);
+            if (numberOfTilesToUpdate == chunkapi$locationOfBlockChange.length) {
+                chunkapi$locationOfBlockChange = java.util.Arrays.copyOf(chunkapi$locationOfBlockChange, chunkapi$locationOfBlockChange.length << 1);
             }
-            this.chunkapi$locationOfBlockChangeInt[this.numberOfTilesToUpdate++] = i1;
+            this.chunkapi$locationOfBlockChange[this.numberOfTilesToUpdate++] = i1;
         }
     }
 
@@ -106,9 +120,9 @@ public abstract class PlayerInstanceMixin {
             int z;
 
             if (this.numberOfTilesToUpdate == 1) {
-                x = this.chunkLocation.chunkXPos * 16 + (this.chunkapi$locationOfBlockChangeInt[0] >> 20 & 15);
-                y = this.chunkapi$locationOfBlockChangeInt[0] & Common.CHUNK_HEIGHT_MASK;
-                z = this.chunkLocation.chunkZPos * 16 + (this.chunkapi$locationOfBlockChangeInt[0] >> 16 & 15);
+                x = this.chunkLocation.chunkXPos * 16 + (this.chunkapi$locationOfBlockChange[0] >> 20 & 15);
+                y = this.chunkapi$locationOfBlockChange[0] & Common.CHUNK_HEIGHT_MASK;
+                z = this.chunkLocation.chunkZPos * 16 + (this.chunkapi$locationOfBlockChange[0] >> 16 & 15);
                 this.sendToAllPlayersWatchingChunk(new S23PacketBlockChange(x, y, z, this.this$0.theWorldServer));
 
                 if (this.this$0.theWorldServer.getBlock(x, y, z).hasTileEntity(this.this$0.theWorldServer.getBlockMetadata(x, y, z))) {
@@ -128,7 +142,7 @@ public abstract class PlayerInstanceMixin {
                     S22PacketMultiBlockChange packet = new S22PacketMultiBlockChange();
                     ((CustomPacketMultiBlockChange) (Object) packet).chunkapi$init(
                         this.numberOfTilesToUpdate,
-                        this.chunkapi$locationOfBlockChangeInt,
+                        this.chunkapi$locationOfBlockChange,
                         this.this$0.theWorldServer.getChunkFromChunkCoords(this.chunkLocation.chunkXPos, this.chunkLocation.chunkZPos)
                     );
                     this.sendToAllPlayersWatchingChunk(packet);
@@ -137,9 +151,9 @@ public abstract class PlayerInstanceMixin {
                 {
                     WorldServer world = this.this$0.theWorldServer;
                     for (l = 0; l < this.numberOfTilesToUpdate; ++l) {
-                        x = this.chunkLocation.chunkXPos * 16 + (this.chunkapi$locationOfBlockChangeInt[l] >> 20 & 15);
-                        y = this.chunkapi$locationOfBlockChangeInt[l] & Common.CHUNK_HEIGHT_MASK;
-                        z = this.chunkLocation.chunkZPos * 16 + (this.chunkapi$locationOfBlockChangeInt[l] >> 16 & 15);
+                        x = this.chunkLocation.chunkXPos * 16 + (this.chunkapi$locationOfBlockChange[l] >> 20 & 15);
+                        y = this.chunkapi$locationOfBlockChange[l] & Common.CHUNK_HEIGHT_MASK;
+                        z = this.chunkLocation.chunkZPos * 16 + (this.chunkapi$locationOfBlockChange[l] >> 16 & 15);
 
                         if (world.getBlock(x, y, z).hasTileEntity(world.getBlockMetadata(x, y, z))) {
                             this.sendTileToAllPlayersWatchingChunk(this.this$0.theWorldServer.getTileEntity(x, y, z));
